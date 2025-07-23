@@ -6,9 +6,13 @@ const DashboardLayout = () => {
   
   const sidebarLinks = [
     { path: '/dashboard', label: 'My Dashboard', icon: '📊' },
-    { path: '/dashboard/course-player', label: 'Course Player', icon: '▶️' },
     { path: '/dashboard/certificates', label: 'Certificates', icon: '🎓' },
     { path: '/dashboard/settings', label: 'Settings', icon: '⚙️' },
+  ];
+
+  const courseLinks = [
+    { path: '/dashboard/course-player/web-dev-101', label: 'Web Development 101', icon: '🌐' },
+    { path: '/dashboard/course-player/javascript-basics', label: 'JavaScript Basics', icon: 'JS' },
   ];
 
   return (
@@ -50,6 +54,21 @@ const DashboardLayout = () => {
               <span>{link.label}</span>
             </Link>
           ))}
+          
+          <div className="mt-6 px-6">
+            <h3 className="text-sm font-semibold uppercase text-text-secondary mb-2">My Courses</h3>
+            {courseLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={`flex items-center gap-3 px-4 py-2 text-base hover:bg-primary/10 hover:text-primary transition-colors rounded-md mb-1`}
+              >
+                <span>{link.icon}</span>
+                <span>{link.label}</span>
+              </Link>
+            ))}
+          </div>
+          
           <Link
             to="/courses"
             className={`flex items-center gap-3 px-6 py-3 text-lg hover:bg-primary/10 hover:text-primary transition-colors mt-4`}

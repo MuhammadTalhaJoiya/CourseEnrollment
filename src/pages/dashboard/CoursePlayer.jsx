@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 // Dummy data for course lessons
 const courseLessons = {
@@ -7,7 +7,7 @@ const courseLessons = {
     {
       id: 'lesson-1',
       title: 'Introduction to Web Development',
-      videoUrl: 'https://www.youtube.com/embed/videoseries?list=PL4cUxeGkcWxgbvmzmdlUYadFXS1EGZWP5',
+      videoUrl: 'https://www.youtube.com/embed/pQN-pnXPaVg',
       duration: '15:30',
       isCompleted: true,
       resources: [
@@ -18,7 +18,7 @@ const courseLessons = {
     {
       id: 'lesson-2',
       title: 'HTML Basics',
-      videoUrl: 'https://www.youtube.com/embed/videoseries?list=PL4cUxeGkcWxgbvmzmdlUYadFXS1EGZWP5',
+      videoUrl: 'https://www.youtube.com/embed/qz0aGYrrlhU',
       duration: '20:00',
       isCompleted: false,
       resources: [
@@ -28,8 +28,28 @@ const courseLessons = {
     {
       id: 'lesson-3',
       title: 'CSS Styling',
-      videoUrl: 'https://www.youtube.com/embed/videoseries?list=PL4cUxeGkcWxgbvmzmdlUYadFXS1EGZWP5',
+      videoUrl: 'https://www.youtube.com/embed/1PnVor36_40',
       duration: '25:10',
+      isCompleted: false,
+      resources: [],
+    },
+  ],
+  'javascript-basics': [
+    {
+      id: 'js-lesson-1',
+      title: 'JavaScript Introduction',
+      videoUrl: 'https://www.youtube.com/embed/W6NZfCO5SIk',
+      duration: '18:45',
+      isCompleted: false,
+      resources: [
+        { name: 'JavaScript Cheatsheet', url: '#', type: 'pdf' },
+      ],
+    },
+    {
+      id: 'js-lesson-2',
+      title: 'Variables and Data Types',
+      videoUrl: 'https://www.youtube.com/embed/hdI2bqOjy3c',
+      duration: '22:15',
       isCompleted: false,
       resources: [],
     },
@@ -53,10 +73,26 @@ const CoursePlayer = () => {
     setActiveLesson(initialLesson);
   }, [courseId, lessonId, lessons]);
 
+  if (!courseId || !courseLessons[courseId]) {
+    return (
+      <div className="flex flex-col justify-center items-center h-full text-text-muted">
+        <h2 className="text-2xl font-bold mb-4">Course Not Found</h2>
+        <p className="mb-4">The course you're looking for doesn't exist or is not available.</p>
+        <Link to="/dashboard" className="btn btn-primary">
+          Return to Dashboard
+        </Link>
+      </div>
+    );
+  }
+
   if (!activeLesson) {
     return (
-      <div className="flex justify-center items-center h-full text-text-muted">
-        Loading lesson or lesson not found...
+      <div className="flex flex-col justify-center items-center h-full text-text-muted">
+        <h2 className="text-2xl font-bold mb-4">Lesson Not Found</h2>
+        <p className="mb-4">The lesson you're looking for doesn't exist or is not available.</p>
+        <Link to={`/dashboard/course-player/${courseId}`} className="btn btn-primary">
+          View Available Lessons
+        </Link>
       </div>
     );
   }
@@ -230,15 +266,21 @@ const CoursePlayer = () => {
       {/* Sidebar - Lesson List */}
       <div className="w-80 bg-surface border-l border-border-primary overflow-y-auto">
         <div className="p-4">
-          <h3 className="font-semibold mb-4">Course Content</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold">Course Content</h3>
+            <Link to="/dashboard" className="text-sm text-primary hover:underline">
+              Back to Dashboard
+            </Link>
+          </div>
+          
           {lessons.map((lesson) => (
-            <button
+            <Link
               key={lesson.id}
-              onClick={() => setActiveLesson(lesson)}
+              to={`/dashboard/course-player/${courseId}/${lesson.id}`}
               className={
-                activeLesson.id === lesson.id
-                  ? 'w-full text-left p-3 rounded-md bg-primary text-text-inverted'
-                  : 'w-full text-left p-3 rounded-md hover:bg-background-tertiary'
+                activeLesson && activeLesson.id === lesson.id
+                  ? 'block w-full text-left p-3 rounded-md bg-primary text-text-inverted mb-2'
+                  : 'block w-full text-left p-3 rounded-md hover:bg-background-tertiary mb-2'
               }
             >
               <div className="flex items-center justify-between">
@@ -248,12 +290,26 @@ const CoursePlayer = () => {
                 </span>
                 {lesson.isCompleted && (
                   <span className="text-sm text-success">
-                    Completed
+                    ✓
                   </span>
                 )}
               </div>
-            </button>
+            </Link>
           ))}
+          
+          {courseId === 'web-dev-101' && (
+            <div className="mt-6 pt-4 border-t border-border-primary">
+              <Link 
+                to="/dashboard/course-player/javascript-basics"
+                className="block w-full text-left p-3 rounded-md bg-background-secondary hover:bg-background-tertiary"
+              >
+                <div className="flex items-center">
+                  <span className="mr-2">➡️</span>
+                  <span>Next Course: JavaScript Basics</span>
+                </div>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

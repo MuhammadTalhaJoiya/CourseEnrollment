@@ -57,6 +57,7 @@ function App() {
       <Route path="/dashboard" element={<DashboardLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="course-player/:courseId" element={<CoursePlayer />} />
+        <Route path="course-player/:courseId/:lessonId" element={<CoursePlayer />} />
         <Route path="certificates" element={<Certificates />} />
         <Route path="settings" element={<Settings />} />
       </Route>
